@@ -1,3 +1,5 @@
+############################################## We import the bookstore we will need #########################################################
+
 import streamlit as st
 import pandas as pd
 import numpy as np  
@@ -7,13 +9,11 @@ import os, glob
 from joblib import load 
 
 
+model = load('speech_emotion.joblib') # We load the model 
 
-####
-def extract_feature(audio, mfcc, chroma, mel):
-    #with soundfile.SoundFile(file_name) as sound_file:
-    X, sample_rate= librosa.load(audio)
-    #sample_rate=sound_file.samplerate
-    #stft = None
+
+def extract_feature(file_name, mfcc, chroma, mel):
+    X, sample_rate= librosa.load(file_name)
     if chroma:
         stft=np.abs(librosa.stft(X))
         result=np.array([])
@@ -29,26 +29,25 @@ def extract_feature(audio, mfcc, chroma, mel):
     return result
 
 
-st.title('Prueba') 
+def predict_emotion(preprocessed_audio):
+    # Obtener la predicción del modelo
+    prediction = model.predict([preprocessed_audio])
 
+    # Decodificar la predicción para obtener la emoción
+    emotion = prediction[0]
+    return  emotion
+
+
+st.title('Prueba') 
 
 
 audio_file = st.file_uploader("Upload audio file", type=['wav'])
 
 
-
 if audio_file is not None:
     st.title("Analyzing...")
-    file_details = {"Filename": audio_file.name, "FileSize": audio_file.size}
-    st.write(file_details)
-    # st.subheader(f"File {file_details['Filename']}"
-    a = st.audio(audio_file, format='audio/wav', start_time=0)
-    path = os.path.join("audio", audio_file.name)
-    #save_audio(audio_file) 
-    #print(path) 
-    #print(path)
-    prueba = extract_feature(a,mfcc=True, chroma=True, mel=True) 
-#
-    #emotion_model = load('speech_emotion.joblib')
-    #pred = emotion_model.predict([prueba]) 
-    #print(pred)
+    #file_details = {"Filename": audio_file.name, "FileSize": audio_file.size}
+    #st.write(file_details)
+    prep = extract_feature(audio_file,mfcc=True, chroma=True, mel=True)
+    emotion = predict_emotion(prep)
+    st.write(f"La emoción detectada es: {emotion}")
