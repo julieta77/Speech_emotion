@@ -7,7 +7,7 @@ import librosa
 import soundfile 
 import os, glob
 from joblib import load 
-import time
+
 
 
 model = load('speech_emotion.joblib') # We load the model 
@@ -44,13 +44,19 @@ st.set_page_config(
    page_icon="🗣️",  
    layout="wide")
 
-with open('style.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 
 st.title('Welcome to my emotion recognition project') 
 
+st.markdown('In this project we created a model for the detection of the three most important emotions :orange["Happy"], :blue["Sad"] and :red["Angry"]. It currently has an accuracy of 82.8%.')
 
-audio_file = st.file_uploader("Upload audio file", type=['wav','.mp3','.mp4'])
+st.markdown('To use this website, simply record your voice on any voice recorder and upload the file to predict your excitement.')
+
+
+
+
+
+audio_file = st.file_uploader("Upload audio file", type=['wav','.mp3','.mp4']) #For the user to enter the sound file
 
 
 
@@ -59,61 +65,12 @@ if audio_file is not None:
     texto.header("Analyzing...") 
     prep = extract_feature(audio_file,mfcc=True, chroma=True, mel=True)
     emotion = predict_emotion(prep)
+    if emotion == 'happy':
+        emoji = "😁"
+    if emotion == 'sad':
+        emoji = "😭"
+    if emotion == 'angry':
+        emoji = "😡"
     texto.empty()
-    texto.subheader(f"La emoción detectada es {emotion}")
-    time.sleep(5)
-    texto.empty() 
-
-
-
-
-#import av
-#from streamlit_webrtc import (
-#    AudioProcessorBase,
-#    ClientSettings,
-#    WebRtcMode,
-#    webrtc_streamer,
-#)
-#
-#class MicrophoneProcessor(AudioProcessorBase):
-#    def recv(self, frame: av.AudioFrame) -> av.AudioFrame:
-#        return frame
-#
-#client_settings = ClientSettings(
-#    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-#    media_stream_constraints={
-#        "audio": True,
-#        "video": False,
-#    },
-#)
-#
-#webrtc_ctx = webrtc_streamer(
-#    key="microphone",
-#    mode=WebRtcMode.SENDRECV,
-#    client_settings=client_settings,
-#    audio_processor_factory=MicrophoneProcessor,
-#)
-#
-#if webrtc_ctx.audio_receiver:
-#    st.write('escuchando..')
-#    st.audio(webrtc_ctx.audio_receiver.get_audio_queue(), format="audio/ogg", start_time=0) 
-#
-#
-##import sounddevice as sd
-#import wavio
-#
-#duration = 5  # duración de la grabación en segundos
-#fs = 44100  # frecuencia de muestreo
-#channels = 1  # número de canales (mono)
-#
-#def record_audio():
-#    myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=channels)
-#    sd.wait()  # espera hasta que termine la grabación
-#    return myrecording
-#
-#if st.button("Grabar audio"):
-#    audio = record_audio()
-#    st.audio(audio, format="audio/wav", start_time=0)
-
-
-
+    st.subheader(f"La emoción detectada es {emotion} {emoji}")
+ 
