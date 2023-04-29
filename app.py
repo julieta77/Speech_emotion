@@ -10,6 +10,7 @@ from joblib import load
 
 
 
+
 model = load('speech_emotion.joblib') # We load the model 
 
 
@@ -48,12 +49,12 @@ st.set_page_config(
 
 st.title('Welcome to my emotion recognition project') 
 
+
 st.markdown('In this project we created a model for the detection of the three most important emotions :orange["Happy"], :blue["Sad"] and :red["Angry"]. It currently has an accuracy of 82.8%.')
 
 st.markdown('To use this website, simply record your voice on any voice recorder and upload the file to predict your excitement.')
 
-
-
+ 
 
 
 audio_file = st.file_uploader("Upload audio file", type=['wav','.mp3','.mp4']) #For the user to enter the sound file
@@ -72,5 +73,5 @@ if audio_file is not None:
     if emotion == 'angry':
         emoji = "😡"
     texto.empty()
-    st.subheader(f"La emoción detectada es {emotion} {emoji}")
+    st.subheader(f"The emotion detected is {emotion} {emoji}")
  
