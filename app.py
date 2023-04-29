@@ -57,7 +57,7 @@ st.markdown('To use this website, simply record your voice on any voice recorder
  
 
 
-audio_file = st.file_uploader("Upload audio file", type=['wav','.mp3','.mp4']) #For the user to enter the sound file
+audio_file = st.file_uploader("Upload audio file", type=['wav','.mp3']) #For the user to enter the sound file
 
 
 
